@@ -27,23 +27,37 @@ class AiRepository(private val context: Context) {
         }
     }
 
-    suspend fun analyze(uri: Uri, apiKey: String, provider: String, baseUrl: String, modelName: String): List<Transaction> {
+    suspend fun analyze(
+        uri: Uri, 
+        apiKey: String, 
+        provider: String, 
+        baseUrl: String, 
+        modelName: String,
+        customPrompt: String? = null
+    ): List<Transaction> {
         return when (provider) {
-            "Gemini" -> analyzeWithGemini(uri, apiKey, modelName)
-            else -> analyzeWithOpenAi(uri, apiKey, baseUrl, modelName)
+            "Gemini" -> analyzeWithGemini(uri, apiKey, modelName, customPrompt)
+            else -> analyzeWithOpenAi(uri, apiKey, baseUrl, modelName, customPrompt)
         }
     }
 
-    suspend fun getAdvice(transactions: List<Transaction>, apiKey: String, provider: String, baseUrl: String, modelName: String): String {
+    suspend fun getAdvice(
+        transactions: List<Transaction>, 
+        apiKey: String, 
+        provider: String, 
+        baseUrl: String, 
+        modelName: String,
+        customPrompt: String? = null
+    ): String {
         val transactionSummary = transactions.take(20).joinToString("\n") { "${it.merchant}: ${it.amount} (${it.category})" }
-        val prompt = """
+        val defaultAdvicePrompt = """
             Sen mert, açık sözlü ve bilgili bir finans koçusun. 
             Şu son işlemleri incele ve 1-2 cümlelik vuran, faydalı bir tavsiye ver. 
             Harcamalar ₺ (Türk Lirası) cinsindendir.
             Motivasyonel ama gerçekçi ol. Emojiler kullan. Türkçe yanıt ver.
-            İşlemler:
-            $transactionSummary
         """.trimIndent()
+
+        val prompt = (if (customPrompt.isNullOrBlank()) defaultAdvicePrompt else customPrompt) + "\n\nİşlemler:\n$transactionSummary"
         
         return queryAiText(prompt, apiKey, provider, baseUrl, modelName)
     }
@@ -81,7 +95,7 @@ class AiRepository(private val context: Context) {
         }
     }
 
-    private suspend fun analyzeWithGemini(uri: Uri, apiKey: String, modelName: String): List<Transaction> {
+    private suspend fun analyzeWithGemini(uri: Uri, apiKey: String, modelName: String, customPrompt: String? = null): List<Transaction> {
         val model = GenerativeModel(
             modelName = modelName,
             apiKey = apiKey,
@@ -90,33 +104,48 @@ class AiRepository(private val context: Context) {
         val pdfBytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
             ?: throw Exception("Empty PDF")
 
+        val finalPrompt = if (customPrompt.isNullOrBlank()) getPrompt() else customPrompt
+
         val response = model.generateContent(
             content {
                 blob("application/pdf", pdfBytes)
-                text(getPrompt())
+                text(finalPrompt)
             }
         )
         val text = response.text ?: throw Exception("Gemini returned nothing")
         return parseJson(text)
     }
 
-    private suspend fun analyzeWithOpenAi(uri: Uri, apiKey: String, baseUrl: String, modelName: String): List<Transaction> {
+    private suspend fun analyzeWithOpenAi(uri: Uri, apiKey: String, baseUrl: String, modelName: String, customPrompt: String? = null): List<Transaction> {
         val pdfText = extractTextFromPdf(uri)
-        val prompt = getPrompt() + "\n\nHere is the statement text:\n$pdfText"
+        var finalPrompt = if (customPrompt.isNullOrBlank()) getPrompt() else customPrompt
+        
+        // OpenAI json_object format REQUIRES the word 'json' in the prompt
+        if (!finalPrompt.lowercase().contains("json")) {
+            finalPrompt += "\n\nImportant: Return the result as a JSON array."
+        }
+        
+        val promptWithContext = finalPrompt + "\n\nHere is the statement text:\n$pdfText"
 
-        val response: OpenAiResponse = httpClient.post(baseUrl + "chat/completions") {
+        val response = httpClient.post(baseUrl + "chat/completions") {
             header(HttpHeaders.Authorization, "Bearer $apiKey")
             contentType(ContentType.Application.Json)
             setBody(OpenAiRequest(
                 model = modelName, 
-                messages = listOf(Message("user", prompt)),
+                messages = listOf(Message("user", promptWithContext)),
                 response_format = ResponseFormat("json_object")
             ))
-        }.body()
+        }
 
-        val content = response.choices.firstOrNull()?.message?.content 
-            ?: throw Exception("OpenAI returned nothing")
-        return parseJson(content)
+        if (response.status.value in 200..299) {
+            val openAiResponse: OpenAiResponse = response.body()
+            val content = openAiResponse.choices.firstOrNull()?.message?.content 
+                ?: throw Exception("OpenAI returned empty choices")
+            return parseJson(content)
+        } else {
+            val errorBody = try { response.bodyAsText() } catch (e: Exception) { "Unknown error" }
+            throw Exception("AI hatası (${response.status.value}): $errorBody")
+        }
     }
 
     private fun extractTextFromPdf(uri: Uri): String {

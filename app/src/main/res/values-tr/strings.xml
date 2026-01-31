@@ -40,4 +40,10 @@
     <string name="cat_salary">Maaş</string>
     <string name="cat_bonus">Bonus</string>
     <string name="cat_other">Diğer</string>
+    <string name="custom_advice_prompt">Özel Tavsiye Promptu (AI Kişiliği)</string>
+    <string name="custom_analysis_prompt">Özel Analiz Promptu (PDF Ayıklama)</string>
+    <string name="advice_personality_hint">Örn: Sen sert bir finans danışmanısın...</string>
+    <string name="analysis_instruction_hint">Örn: Banka ekstresinden verileri ayıkla...</string>
+    <string name="default_advice_prompt">Sen mert, açık sözlü ve bilgili bir finans koçusun. Harcamaları incele ve kısa, vuran tavsiyeler ver. Motivasyonel ama gerçekçi ol. Emojiler kullan. Türkçe yanıt ver.</string>
+    <string name="default_analysis_prompt">Extract transactions as JSON array. Each object: date (Unix ms), merchant (String), amount (Double), category (Grocery, Tech, Entertainment, Food, Salary, Other). Return ONLY valid JSON array.</string>
 </resources>

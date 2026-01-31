@@ -197,9 +197,11 @@ layout notification_template_part_chronometer
 layout notification_template_part_time
 mipmap ic_launcher
 string add_entry
+string advice_personality_hint
 string ai_coach_back
 string amount
 string analysis_error
+string analysis_instruction_hint
 string analysis_success
 string analyzing_gains
 string androidx_startup
@@ -231,6 +233,8 @@ string close_drawer
 string close_sheet
 string collapsed
 string command_center
+string custom_advice_prompt
+string custom_analysis_prompt
 string date_input_headline
 string date_input_headline_description
 string date_input_invalid_for_pattern
@@ -262,6 +266,8 @@ string date_range_picker_scroll_to_next_month
 string date_range_picker_scroll_to_previous_month
 string date_range_picker_start_headline
 string date_range_picker_title
+string default_advice_prompt
+string default_analysis_prompt
 string default_error_message
 string default_popup_window_title
 string dialog

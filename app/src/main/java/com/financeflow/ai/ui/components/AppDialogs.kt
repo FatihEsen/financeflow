@@ -1,6 +1,7 @@
 package com.financeflow.ai.ui.components
 
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,13 +25,17 @@ fun ApiKeyDialog(
     currentProvider: String,
     currentBaseUrl: String,
     currentModel: String,
+    currentAdvicePrompt: String,
+    currentAnalysisPrompt: String,
     onDismiss: () -> Unit,
-    onSave: (String, String, String, String) -> Unit
+    onSave: (String, String, String, String, String, String) -> Unit
 ) {
     var text by remember { mutableStateOf(currentKey) }
     var provider by remember { mutableStateOf(currentProvider) }
     var baseUrl by remember { mutableStateOf(currentBaseUrl) }
     var modelName by remember { mutableStateOf(currentModel) }
+    var advicePrompt by remember { mutableStateOf(currentAdvicePrompt) }
+    var analysisPrompt by remember { mutableStateOf(currentAnalysisPrompt) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -40,7 +45,10 @@ fun ApiKeyDialog(
             }
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 Text(stringResource(R.string.select_provider), style = MaterialTheme.typography.labelLarge, color = Color.Gray)
                 
                 // Provider Selection
@@ -157,11 +165,33 @@ fun ApiKeyDialog(
                         shape = RoundedCornerShape(12.dp)
                     )
                 }
+
+                Divider(color = Color.White.copy(alpha = 0.1f))
+
+                OutlinedTextField(
+                    value = advicePrompt,
+                    onValueChange = { advicePrompt = it },
+                    label = { Text(stringResource(R.string.custom_advice_prompt)) },
+                    placeholder = { Text(stringResource(R.string.default_advice_prompt)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    minLines = 3
+                )
+
+                OutlinedTextField(
+                    value = analysisPrompt,
+                    onValueChange = { analysisPrompt = it },
+                    label = { Text(stringResource(R.string.custom_analysis_prompt)) },
+                    placeholder = { Text(stringResource(R.string.default_analysis_prompt)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    minLines = 3
+                )
             }
         },
         confirmButton = {
             Button(
-                onClick = { onSave(text, provider, baseUrl, modelName); onDismiss() },
+                onClick = { onSave(text, provider, baseUrl, modelName, advicePrompt, analysisPrompt); onDismiss() },
                 colors = ButtonDefaults.buttonColors(containerColor = Indigo600),
                 modifier = Modifier.fillMaxWidth()
             ) {

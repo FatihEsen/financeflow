@@ -101,9 +101,11 @@
     <item name="wrapped_composition_tag" type="id"/>
     <integer name="status_bar_notification_info_maxnum">999</integer>
     <string name="add_entry">Add Entry</string>
+    <string name="advice_personality_hint">e.g. You are a strict financial advisor...</string>
     <string name="ai_coach_back">Your AI coach has your back today.</string>
     <string name="amount">Amount (₺)</string>
     <string name="analysis_error">Yo chief, we hit a snag: %1$s</string>
+    <string name="analysis_instruction_hint">e.g. Extract JSON from the bank statement...</string>
     <string name="analysis_success">Nice work boss! AI processed everything perfectly. 🔥</string>
     <string name="analyzing_gains">Analyzing your gains, chief...</string>
     <string name="androidx_startup" translatable="false">androidx.startup</string>
@@ -135,6 +137,8 @@
     <string name="close_sheet">"Close sheet"</string>
     <string name="collapsed">Collapsed</string>
     <string name="command_center">Command Center ⚙️</string>
+    <string name="custom_advice_prompt">Custom Advice Prompt (AI Personality)</string>
+    <string name="custom_analysis_prompt">Custom Analysis Prompt (PDF Extraction)</string>
     <string name="date_input_headline">Entered date</string>
     <string name="date_input_headline_description">Entered date: %1$s</string>
     <string name="date_input_invalid_for_pattern">Date does not match expected pattern: %1$s</string>
@@ -170,6 +174,8 @@
     <string name="date_range_picker_scroll_to_previous_month">Scroll to show the previous month</string>
     <string name="date_range_picker_start_headline">Start date</string>
     <string name="date_range_picker_title">Select dates</string>
+    <string name="default_advice_prompt">Sen mert, açık sözlü ve bilgili bir finans koçusun. Harcamaları incele ve kısa, vuran tavsiyeler ver. Motivasyonel ama gerçekçi ol. Emojiler kullan. Türkçe yanıt ver.</string>
+    <string name="default_analysis_prompt">Extract transactions as JSON array. Each object: date (Unix ms), merchant (String), amount (Double), category (Grocery, Tech, Entertainment, Food, Salary, Other). Return ONLY valid JSON array.</string>
     <string name="default_error_message">"Invalid input"</string>
     <string name="default_popup_window_title" ns1:ignore="ExtraTranslation">"Pop-Up Window"</string>
     <string name="dialog">"Dialog"</string>
@@ -283,23 +289,14 @@
         <attr format="reference" name="fontProviderCerts"/>
         
         <attr name="fontProviderFetchStrategy">
-            <!-- The blocking font fetch works as follows.
-              First, check the local cache, then if the requested font is not cached, request the
-              font from the provider and wait until it is finished.  You can change the length of
-              the timeout by modifying fontProviderFetchTimeout.  If the timeout happens, the
-              default typeface will be used instead. -->
+            
             <enum name="blocking" value="0"/>
-            <!-- The async font fetch works as follows.
-              First, check the local cache, then if the requeted font is not cached, trigger a
-              request the font and continue with layout inflation. Once the font fetch succeeds, the
-              target text view will be refreshed with the downloaded font data. The
-              fontProviderFetchTimeout will be ignored if async loading is specified. -->
+            
             <enum name="async" value="1"/>
         </attr>
         
         <attr format="integer" name="fontProviderFetchTimeout">
-            <!-- A special value for the timeout. In this case, the blocking font fetching will not
-              timeout and wait until a reply is received from the font provider. -->
+            
             <enum name="forever" value="-1"/>
         </attr>
         

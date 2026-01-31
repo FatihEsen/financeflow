@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_entry">Ekle</string>
+    <string name="advice_personality_hint">Örn: Sen sert bir finans danışmanısın...</string>
     <string name="ai_coach_back">AI koçun bugün arkanda.</string>
     <string name="amount">Miktar (₺)</string>
     <string name="analysis_error">Valla şef, bir pürüz çıktı: %1$s</string>
+    <string name="analysis_instruction_hint">Örn: Banka ekstresinden verileri ayıkla...</string>
     <string name="analysis_success">Harika iş patron! AI her şeyi mükemmel işledi. 🔥</string>
     <string name="analyzing_gains">Kazançların analiz ediliyor, patron...</string>
     <string name="api_key">API Anahtarı</string>
@@ -20,6 +22,10 @@
     <string name="cat_tech">Teknoloji</string>
     <string name="category">Kategori</string>
     <string name="command_center">Komuta Merkezi ⚙️</string>
+    <string name="custom_advice_prompt">Özel Tavsiye Promptu (AI Kişiliği)</string>
+    <string name="custom_analysis_prompt">Özel Analiz Promptu (PDF Ayıklama)</string>
+    <string name="default_advice_prompt">Sen mert, açık sözlü ve bilgili bir finans koçusun. Harcamaları incele ve kısa, vuran tavsiyeler ver. Motivasyonel ama gerçekçi ol. Emojiler kullan. Türkçe yanıt ver.</string>
+    <string name="default_analysis_prompt">Extract transactions as JSON array. Each object: date (Unix ms), merchant (String), amount (Double), category (Grocery, Tech, Entertainment, Food, Salary, Other). Return ONLY valid JSON array.</string>
     <string name="expense">Gider</string>
     <string name="feed_ai_boss">AI Patronu Besle</string>
     <string name="health_solid">Durum: \nSağlam 💪</string>

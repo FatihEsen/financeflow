@@ -41,6 +41,8 @@ class DashboardViewModel @Inject constructor(
     val provider = preferenceManager.provider.stateIn(viewModelScope, SharingStarted.Eagerly, "Gemini")
     val baseUrl = preferenceManager.baseUrl.stateIn(viewModelScope, SharingStarted.Eagerly, "https://api.openai.com/v1/")
     val modelName = preferenceManager.modelName.stateIn(viewModelScope, SharingStarted.Eagerly, "gemini-2.0-flash")
+    val advicePrompt = preferenceManager.advicePrompt.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val analysisPrompt = preferenceManager.analysisPrompt.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val transactions = transactionDao.getAllTransactions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -68,7 +70,8 @@ class DashboardViewModel @Inject constructor(
                     key,
                     provider.value,
                     baseUrl.value,
-                    modelName.value
+                    modelName.value,
+                    advicePrompt.value
                 )
                 _advice.value = newAdvice
             } catch (e: Exception) {
@@ -99,9 +102,9 @@ class DashboardViewModel @Inject constructor(
     val spendingByCategory = transactionDao.getSpendingByCategory()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    fun saveSettings(key: String, provider: String, url: String, model: String) {
+    fun saveSettings(key: String, provider: String, url: String, model: String, advice: String, analysis: String) {
         viewModelScope.launch {
-            preferenceManager.saveSettings(key, provider, url, model)
+            preferenceManager.saveSettings(key, provider, url, model, advice, analysis)
         }
     }
 
@@ -135,7 +138,8 @@ class DashboardViewModel @Inject constructor(
                         currentKey, 
                         provider.value, 
                         baseUrl.value,
-                        modelName.value
+                        modelName.value,
+                        analysisPrompt.value
                     )
                     transactionDao.insertTransactions(analyzedTransactions)
                 }

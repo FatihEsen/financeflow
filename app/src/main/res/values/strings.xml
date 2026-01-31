@@ -40,4 +40,10 @@
     <string name="cat_salary">Salary</string>
     <string name="cat_bonus">Bonus</string>
     <string name="cat_other">Other</string>
+    <string name="custom_advice_prompt">Custom Advice Prompt (AI Personality)</string>
+    <string name="custom_analysis_prompt">Custom Analysis Prompt (PDF Extraction)</string>
+    <string name="advice_personality_hint">e.g. You are a strict financial advisor...</string>
+    <string name="analysis_instruction_hint">e.g. Extract JSON from the bank statement...</string>
+    <string name="default_advice_prompt">Sen mert, açık sözlü ve bilgili bir finans koçusun. Harcamaları incele ve kısa, vuran tavsiyeler ver. Motivasyonel ama gerçekçi ol. Emojiler kullan. Türkçe yanıt ver.</string>
+    <string name="default_analysis_prompt">Extract transactions as JSON array. Each object: date (Unix ms), merchant (String), amount (Double), category (Grocery, Tech, Entertainment, Food, Salary, Other). Return ONLY valid JSON array.</string>
 </resources>

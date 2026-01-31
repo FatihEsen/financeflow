@@ -77,8 +77,10 @@ fun DashboardScreen(
             currentProvider = viewModel.provider.collectAsState().value,
             currentBaseUrl = viewModel.baseUrl.collectAsState().value,
             currentModel = viewModel.modelName.collectAsState().value,
+            currentAdvicePrompt = viewModel.advicePrompt.collectAsState().value ?: "",
+            currentAnalysisPrompt = viewModel.analysisPrompt.collectAsState().value ?: "",
             onDismiss = { showApiKeyDialog = false },
-            onSave = { k, p, u, m -> viewModel.saveSettings(k, p, u, m) }
+            onSave = { k, p, u, m, adv, ana -> viewModel.saveSettings(k, p, u, m, adv, ana) }
         )
     }
 

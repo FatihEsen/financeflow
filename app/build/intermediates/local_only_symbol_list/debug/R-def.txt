@@ -2,9 +2,11 @@ R_DEF: Internal format may change without notice
 local
 mipmap ic_launcher
 string add_entry
+string advice_personality_hint
 string ai_coach_back
 string amount
 string analysis_error
+string analysis_instruction_hint
 string analysis_success
 string analyzing_gains
 string api_key
@@ -21,6 +23,10 @@ string cat_salary
 string cat_tech
 string category
 string command_center
+string custom_advice_prompt
+string custom_analysis_prompt
+string default_advice_prompt
+string default_analysis_prompt
 string expense
 string feed_ai_boss
 string health_solid
