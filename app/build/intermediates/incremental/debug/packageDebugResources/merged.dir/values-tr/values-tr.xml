@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_entry">Ekle</string>
+    <string name="ai_coach_back">AI koçun bugün arkanda.</string>
+    <string name="amount">Miktar (₺)</string>
+    <string name="analysis_error">Valla şef, bir pürüz çıktı: %1$s</string>
+    <string name="analysis_success">Harika iş patron! AI her şeyi mükemmel işledi. 🔥</string>
+    <string name="analyzing_gains">Kazançların analiz ediliyor, patron...</string>
+    <string name="api_key">API Anahtarı</string>
+    <string name="app_name">FinanceFlow AI</string>
+    <string name="bag_secured">Para Cepte! 💰</string>
+    <string name="base_url">Taban URL</string>
+    <string name="cancel">İptal</string>
+    <string name="cat_bonus">Bonus</string>
+    <string name="cat_entertainment">Eğlence</string>
+    <string name="cat_food">Yemek</string>
+    <string name="cat_grocery">Market</string>
+    <string name="cat_other">Diğer</string>
+    <string name="cat_salary">Maaş</string>
+    <string name="cat_tech">Teknoloji</string>
+    <string name="category">Kategori</string>
+    <string name="command_center">Komuta Merkezi ⚙️</string>
+    <string name="expense">Gider</string>
+    <string name="feed_ai_boss">AI Patronu Besle</string>
+    <string name="health_solid">Durum: \nSağlam 💪</string>
+    <string name="income">Gelir</string>
+    <string name="income_desc">Gelir</string>
+    <string name="manual_entry">+ Manuel</string>
+    <string name="manual_expense_desc">Manuel Gider</string>
+    <string name="merchant_name">Kaynak / Satıcı</string>
+    <string name="model_name">Model Adı</string>
+    <string name="new_burn">Yeni Harcama 💸</string>
+    <string name="processing_gemini">AI ile işleniyor</string>
+    <string name="quick_presets">Hızlı Ayarlar:</string>
+    <string name="recent_activity">Son Etkinlikler 📊</string>
+    <string name="select_model">AI Modeli:</string>
+    <string name="select_provider">AI sağlayıcını seç, Şef:</string>
+    <string name="top_cat_tech">En Çok: \nTeknoloji 💻</string>
+    <string name="total_burn">Toplam Harcama</string>
+    <string name="trends">Trendler</string>
+    <string name="update_settings">Ayarları Güncelle</string>
+    <string name="whats_up_boss">Naber, Patron? 📈</string>
+</resources>

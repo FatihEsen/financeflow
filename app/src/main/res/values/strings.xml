@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FinanceFlow AI</string>
+    <string name="manual_entry">+ Manual</string>
+    <string name="recent_activity">Recent Activity 📊</string>
+    <string name="analyzing_gains">Analyzing your gains, chief...</string>
+    <string name="processing_gemini">Processing through AI</string>
+    <string name="whats_up_boss">What\'s up, Boss? 📈</string>
+    <string name="ai_coach_back">Your AI coach has your back today.</string>
+    <string name="total_burn">Total Burn</string>
+    <string name="trends">Trends</string>
+    <string name="top_cat_tech">Top Cat: \nTech 💻</string>
+    <string name="health_solid">Health: \nSolid 💪</string>
+    <string name="merchant_name">Source / Merchant</string>
+    <string name="amount">Amount (₺)</string>
+    <string name="category">Category</string>
+    <string name="income">Income</string>
+    <string name="expense">Expense</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_entry">Add Entry</string>
+    <string name="bag_secured">Bag Secured! 💰</string>
+    <string name="new_burn">New Burn 💸</string>
+    <string name="command_center">Command Center ⚙️</string>
+    <string name="select_provider">Select your AI provider, Chief:</string>
+    <string name="api_key">API Key</string>
+    <string name="model_name">Model Name</string>
+    <string name="select_model">AI Model:</string>
+    <string name="base_url">Base URL</string>
+    <string name="update_settings">Update Settings</string>
+    <string name="feed_ai_boss">Feed the AI Boss</string>
+    <string name="quick_presets">Quick Presets:</string>
+    <string name="analysis_success">Nice work boss! AI processed everything perfectly. 🔥</string>
+    <string name="analysis_error">Yo chief, we hit a snag: %1$s</string>
+    <string name="income_desc">Income</string>
+    <string name="manual_expense_desc">Manual Expense</string>
+    <string name="cat_grocery">Grocery</string>
+    <string name="cat_tech">Tech</string>
+    <string name="cat_entertainment">Entertainment</string>
+    <string name="cat_food">Food</string>
+    <string name="cat_salary">Salary</string>
+    <string name="cat_bonus">Bonus</string>
+    <string name="cat_other">Other</string>
+</resources>
