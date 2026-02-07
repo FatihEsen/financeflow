@@ -25,3 +25,7 @@ financeflow.jks
 *.apk
 *.aar
 *.bundle
+
+# Additional ignored files
+app/build/
+java_pid*.hprof
