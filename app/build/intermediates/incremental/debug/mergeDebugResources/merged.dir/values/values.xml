@@ -111,6 +111,7 @@
     <string name="androidx_startup" translatable="false">androidx.startup</string>
     <string name="api_key">API Key</string>
     <string name="app_name">FinanceFlow AI</string>
+    <string name="attach_pdf_optional">Attach Salary PDF (Optional)</string>
     <string name="bag_secured">Bag Secured! 💰</string>
     <string name="base_url">Base URL</string>
     <string name="bottom_sheet_collapse_description">Collapse bottom sheet</string>

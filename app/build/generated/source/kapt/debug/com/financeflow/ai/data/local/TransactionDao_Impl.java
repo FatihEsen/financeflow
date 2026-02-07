@@ -42,7 +42,7 @@ public final class TransactionDao_Impl implements TransactionDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `transactions` (`id`,`date`,`merchant`,`amount`,`category`,`description`,`isAIGenerated`) VALUES (nullif(?, 0),?,?,?,?,?,?)";
+        return "INSERT OR REPLACE INTO `transactions` (`id`,`date`,`merchant`,`amount`,`category`,`description`,`isAIGenerated`,`pdfUri`) VALUES (nullif(?, 0),?,?,?,?,?,?,?)";
       }
 
       @Override
@@ -68,6 +68,11 @@ public final class TransactionDao_Impl implements TransactionDao {
         }
         final int _tmp = entity.isAIGenerated() ? 1 : 0;
         statement.bindLong(7, _tmp);
+        if (entity.getPdfUri() == null) {
+          statement.bindNull(8);
+        } else {
+          statement.bindString(8, entity.getPdfUri());
+        }
       }
     };
     this.__deletionAdapterOfTransaction = new EntityDeletionOrUpdateAdapter<Transaction>(__db) {
@@ -140,6 +145,7 @@ public final class TransactionDao_Impl implements TransactionDao {
           final int _cursorIndexOfCategory = CursorUtil.getColumnIndexOrThrow(_cursor, "category");
           final int _cursorIndexOfDescription = CursorUtil.getColumnIndexOrThrow(_cursor, "description");
           final int _cursorIndexOfIsAIGenerated = CursorUtil.getColumnIndexOrThrow(_cursor, "isAIGenerated");
+          final int _cursorIndexOfPdfUri = CursorUtil.getColumnIndexOrThrow(_cursor, "pdfUri");
           final List<Transaction> _result = new ArrayList<Transaction>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final Transaction _item;
@@ -171,7 +177,13 @@ public final class TransactionDao_Impl implements TransactionDao {
             final int _tmp;
             _tmp = _cursor.getInt(_cursorIndexOfIsAIGenerated);
             _tmpIsAIGenerated = _tmp != 0;
-            _item = new Transaction(_tmpId,_tmpDate,_tmpMerchant,_tmpAmount,_tmpCategory,_tmpDescription,_tmpIsAIGenerated);
+            final String _tmpPdfUri;
+            if (_cursor.isNull(_cursorIndexOfPdfUri)) {
+              _tmpPdfUri = null;
+            } else {
+              _tmpPdfUri = _cursor.getString(_cursorIndexOfPdfUri);
+            }
+            _item = new Transaction(_tmpId,_tmpDate,_tmpMerchant,_tmpAmount,_tmpCategory,_tmpDescription,_tmpIsAIGenerated,_tmpPdfUri);
             _result.add(_item);
           }
           return _result;

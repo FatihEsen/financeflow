@@ -11,6 +11,7 @@ string analysis_success
 string analyzing_gains
 string api_key
 string app_name
+string attach_pdf_optional
 string bag_secured
 string base_url
 string cancel

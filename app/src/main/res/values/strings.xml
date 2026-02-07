@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">FinanceFlow AI</string>
     <string name="manual_entry">+ Manual</string>
+    <string name="attach_pdf_optional">Attach Salary PDF (Optional)</string>
     <string name="recent_activity">Recent Activity 📊</string>
     <string name="analyzing_gains">Analyzing your gains, chief...</string>
     <string name="processing_gemini">Processing through AI</string>

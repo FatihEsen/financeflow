@@ -23,7 +23,8 @@ object DataModule {
             context,
             AppDatabase::class.java,
             "finance_flow.db"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

@@ -13,5 +13,6 @@ data class Transaction(
     val amount: Double,
     val category: String, // Grocery, Tech, Entertainment, Food, Other
     val description: String?,
-    val isAIGenerated: Boolean = true
+    val isAIGenerated: Boolean = true,
+    val pdfUri: String? = null
 )

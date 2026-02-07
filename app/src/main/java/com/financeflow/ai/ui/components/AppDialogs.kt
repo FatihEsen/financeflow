@@ -17,6 +17,8 @@ import com.financeflow.ai.ui.theme.Indigo600
 import androidx.compose.ui.res.stringResource
 import com.financeflow.ai.R
 import kotlinx.coroutines.launch
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +36,13 @@ fun ApiKeyDialog(
     var provider by remember { mutableStateOf(currentProvider) }
     var baseUrl by remember { mutableStateOf(currentBaseUrl) }
     var modelName by remember { mutableStateOf(currentModel) }
-    var advicePrompt by remember { mutableStateOf(currentAdvicePrompt) }
-    var analysisPrompt by remember { mutableStateOf(currentAnalysisPrompt) }
+    
+    // Fix: Pre-fill with default values if empty so they are not lost
+    val defaultAdvice = stringResource(R.string.default_advice_prompt)
+    val defaultAnalysis = stringResource(R.string.default_analysis_prompt)
+    
+    var advicePrompt by remember { mutableStateOf(if (currentAdvicePrompt.isBlank()) defaultAdvice else currentAdvicePrompt) }
+    var analysisPrompt by remember { mutableStateOf(if (currentAnalysisPrompt.isBlank()) defaultAnalysis else currentAnalysisPrompt) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -210,7 +217,7 @@ fun ApiKeyDialog(
 @Composable
 fun ManualEntryDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, Double, String, Boolean) -> Unit,
+    onConfirm: (String, Double, String, Boolean, android.net.Uri?) -> Unit,
     predictCategory: suspend (String) -> String?,
     isPredicting: Boolean
 ) {
@@ -218,7 +225,15 @@ fun ManualEntryDialog(
     var amount by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("Grocery") }
     var isIncome by remember { mutableStateOf(false) }
+    var selectedPdfUri by remember { mutableStateOf<android.net.Uri?>(null) }
     val scope = rememberCoroutineScope()
+    
+    val pdfLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri: android.net.Uri? -> 
+            uri?.let { selectedPdfUri = it }
+        }
+    )
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -266,7 +281,7 @@ fun ManualEntryDialog(
                     label = { Text(stringResource(R.string.amount)) },
                     modifier = Modifier.fillMaxWidth()
                 )
-                val categories = listOf("Grocery", "Tech", "Entertainment", "Food", "Salary", "Bonus", "Other")
+                val categories = listOf("Grocery", "Tech", "Entertainment", "Food", "Salary", "Payment", "Other")
                 var expanded by remember { mutableStateOf(false) }
                 Box {
                     OutlinedButton(onClick = { expanded = true }, modifier = Modifier.fillMaxWidth()) {
@@ -281,12 +296,26 @@ fun ManualEntryDialog(
                         }
                     }
                 }
+
+                // PDF Attachment for Income/Salary
+                if (isIncome) {
+                    OutlinedButton(
+                        onClick = { pdfLauncher.launch(arrayOf("application/pdf")) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (selectedPdfUri != null) {
+                            Text("PDF Attached ✅", color = com.financeflow.ai.ui.theme.Teal400)
+                        } else {
+                            Text(stringResource(R.string.attach_pdf_optional))
+                        }
+                    }
+                }
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    onConfirm(merchant, amount.toDoubleOrNull() ?: 0.0, category, isIncome)
+                    onConfirm(merchant, amount.toDoubleOrNull() ?: 0.0, category, isIncome, selectedPdfUri)
                     onDismiss()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Indigo600)

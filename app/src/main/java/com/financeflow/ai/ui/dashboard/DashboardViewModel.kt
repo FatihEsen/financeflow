@@ -47,8 +47,27 @@ class DashboardViewModel @Inject constructor(
     val transactions = transactionDao.getAllTransactions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val totalSpending = transactionDao.getTotalSpendingSince(0)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+    val netBalance = transactions.map { list ->
+        // Manual salaries (isAIGenerated = false and negative amount)
+        val salary = list
+            .filter { !it.isAIGenerated && it.amount < 0 }
+            .sumOf { kotlin.math.abs(it.amount) }
+            
+        // Spending: All positive amounts EXCEPT those categorized as 'Payment'
+        val spending = list
+            .filter { it.amount > 0 && it.category != "Payment" }
+            .sumOf { it.amount }
+            
+        salary - spending
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+
+    val monthlyDebt = transactions.map { list ->
+        list.filter { it.amount > 0 && it.category != "Payment" }.sumOf { it.amount }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+
+    val monthlyIncome = transactions.map { list ->
+        list.filter { !it.isAIGenerated && it.amount < 0 }.sumOf { kotlin.math.abs(it.amount) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     init {
         // Automatically refresh advice when transactions change
@@ -108,7 +127,16 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun addManualTransaction(merchant: String, amount: Double, category: String, isIncome: Boolean) {
+    val monthlyGroupedTransactions: StateFlow<Map<String, List<Transaction>>> = transactions
+        .map { list ->
+            list.groupBy { transaction ->
+                val formatter = java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
+                formatter.format(java.util.Date(transaction.date))
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
+    fun addManualTransaction(merchant: String, amount: Double, category: String, isIncome: Boolean, pdfUri: Uri?) {
         viewModelScope.launch {
             val transaction = Transaction(
                 date = System.currentTimeMillis(),
@@ -116,7 +144,8 @@ class DashboardViewModel @Inject constructor(
                 amount = if (isIncome) -amount else amount, // Negative for income
                 category = category,
                 description = if (isIncome) "Income" else "Manual Expense",
-                isAIGenerated = false
+                isAIGenerated = false,
+                pdfUri = pdfUri?.toString()
             )
             transactionDao.insertTransactions(listOf(transaction))
         }

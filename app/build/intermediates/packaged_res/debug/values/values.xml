@@ -10,6 +10,7 @@
     <string name="analyzing_gains">Analyzing your gains, chief...</string>
     <string name="api_key">API Key</string>
     <string name="app_name">FinanceFlow AI</string>
+    <string name="attach_pdf_optional">Attach Salary PDF (Optional)</string>
     <string name="bag_secured">Bag Secured! 💰</string>
     <string name="base_url">Base URL</string>
     <string name="cancel">Cancel</string>

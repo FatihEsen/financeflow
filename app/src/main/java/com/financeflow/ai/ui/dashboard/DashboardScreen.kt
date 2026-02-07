@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Menu
 import com.financeflow.ai.ui.components.PDFPicker
 import com.financeflow.ai.ui.components.SwipeableTransactionItem
 import com.financeflow.ai.domain.model.Transaction
@@ -42,7 +43,9 @@ fun DashboardScreen(
     viewModel: DashboardViewModel
 ) {
     val transactions by viewModel.transactions.collectAsState()
-    val totalSpending by viewModel.totalSpending.collectAsState()
+    val netBalance by viewModel.netBalance.collectAsState()
+    val monthlyDebt by viewModel.monthlyDebt.collectAsState()
+    val monthlyIncome by viewModel.monthlyIncome.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val apiKey by viewModel.apiKey.collectAsState()
     val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
@@ -87,10 +90,20 @@ fun DashboardScreen(
     if (showManualEntryDialog) {
         com.financeflow.ai.ui.components.ManualEntryDialog(
             onDismiss = { showManualEntryDialog = false },
-            onConfirm = { m, a, c, inc -> viewModel.addManualTransaction(m, a, c, inc) },
+            onConfirm = { m, a, c, inc, pdf -> viewModel.addManualTransaction(m, a, c, inc, pdf) },
             predictCategory = { viewModel.predictCategory(it) },
             isPredicting = viewModel.isPredictingCategory.collectAsState().value
         )
+    }
+
+    var showMonthlySummary by remember { mutableStateOf(false) }
+
+    if (showMonthlySummary) {
+        MonthlySummaryScreen(
+            viewModel = viewModel,
+            onBack = { showMonthlySummary = false }
+        )
+        return
     }
 
     Scaffold(
@@ -123,14 +136,19 @@ fun DashboardScreen(
                 item { 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         HeaderSection()
-                        IconButton(onClick = { showApiKeyDialog = true }) {
-                            Icon(androidx.compose.material.icons.Icons.Default.Settings, "API Key", tint = Color.White)
+                        Row {
+                             IconButton(onClick = { showMonthlySummary = true }) {
+                                Icon(androidx.compose.material.icons.Icons.Default.Menu, "Monthly View", tint = Color.White)
+                             }
+                             IconButton(onClick = { showApiKeyDialog = true }) {
+                                Icon(androidx.compose.material.icons.Icons.Default.Settings, "API Key", tint = Color.White)
+                             }
                         }
                     }
                 }
-                item { SpendingOverview(totalSpending) }
+                item { SpendingOverview(netBalance) }
                 item { AdviceSection(viewModel.advice.collectAsState().value) }
-                item { BentoGridSection(transactions) }
+                item { BentoGridSection(monthlyIncome, monthlyDebt) }
                 item {
                     Text(
                         text = stringResource(R.string.recent_activity),
@@ -236,39 +254,44 @@ fun AdviceSection(advice: String?) {
 }
 
 @Composable
-fun SpendingOverview(total: Double) {
+fun SpendingOverview(amount: Double) {
     GlassCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            val isPositive = amount >= 0
             CircularProgressIndicator(
-                progress = 0.7f, // Mock progress
+                progress = 1f,
                 modifier = Modifier.size(140.dp),
                 strokeWidth = 12.dp,
-                color = Indigo600,
+                color = if (isPositive) Teal400 else Color.Red,
                 trackColor = GlassWhite
             )
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "₺${String.format("%.2f", total)}",
+                    text = "₺${String.format("%.2f", amount)}",
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = stringResource(R.string.total_burn), color = Color.LightGray, fontSize = 12.sp)
+                Text(
+                    text = if (isPositive) "Net Balance" else "Debt Remaining",
+                    color = Color.LightGray,
+                    fontSize = 12.sp
+                )
             }
         }
     }
 }
 
 @Composable
-fun BentoGridSection(transactions: List<Transaction>) {
+fun BentoGridSection(income: Double, debt: Double) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp),
+            .height(120.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         GlassCard(
@@ -276,26 +299,20 @@ fun BentoGridSection(transactions: List<Transaction>) {
                 .weight(1f)
                 .fillMaxHeight()
         ) {
-            Column(Modifier.padding(16.dp)) {
-                Text(stringResource(R.string.trends), color = Color.White, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(8.dp))
-                BarChart(Modifier.fillMaxSize())
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.Center) {
+                Text("Monthly Salary", color = Color.Gray, style = MaterialTheme.typography.labelSmall)
+                Text("₺${String.format("%.2f", income)}", color = Teal400, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
             }
         }
         
-        Column(
-            modifier = Modifier.weight(0.6f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        GlassCard(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
         ) {
-            GlassCard(Modifier.weight(1f).fillMaxWidth()) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text(stringResource(R.string.top_cat_tech), color = Color.White, fontWeight = FontWeight.Bold)
-                }
-            }
-            GlassCard(Modifier.weight(1f).fillMaxWidth()) {
-                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text(stringResource(R.string.health_solid), color = Color.White, fontWeight = FontWeight.Bold)
-                }
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.Center) {
+                Text("Total Spending", color = Color.Gray, style = MaterialTheme.typography.labelSmall)
+                Text("₺${String.format("%.2f", debt)}", color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
             }
         }
     }

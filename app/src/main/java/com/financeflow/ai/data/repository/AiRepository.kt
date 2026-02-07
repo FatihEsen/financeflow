@@ -166,8 +166,16 @@ class AiRepository(private val context: Context) {
     }
 
     private fun getPrompt() = """
-        Extract transactions as JSON array.
-        Each object: date (Unix ms), merchant (String), amount (Double, exp positive, inc negative, currency is ₺), category (Grocery, Tech, Entertainment, Food, Salary, Other).
+        Extract transactions as JSON array. 
+        Each object: date (Unix ms), merchant (String), amount (Double), category (Grocery, Tech, Entertainment, Food, Salary, Payment, Other).
+        
+        CRITICAL RULES:
+        1. SPENDING (Money leaving you/Credit card purchases) MUST have POSITIVE amount.
+        2. INCOME or PAYMENTS TO CARD (Money entering/Credit card payment) MUST have NEGATIVE amount.
+        3. Use 'Payment' category for credit card bills/payments or transfers to settle credit card debt.
+        4. Use 'Salary' for income.
+        5. If a transaction looks like a purchase but has a negative sign in the PDF, CONVERT it to POSITIVE.
+        
         Return ONLY valid JSON array.
     """.trimIndent()
 
