@@ -42,7 +42,7 @@
 
 1. Bu depoyu klonlayın:
    ```bash
-   git clone https://github.com/kullanici_adi/native.git
+   git clone https://github.com/FatihEsen/financeflow.git
    ```
 2. Projeyi Android Studio ile açın.
 3. Uygulama içindeki **Command Center (Ayarlar)** kısmından:
